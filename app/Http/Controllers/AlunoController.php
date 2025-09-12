@@ -90,7 +90,8 @@ class AlunoController extends Controller
             'atribuir_turma' => ['required', 'regex:/^TA[0-9]{1,2}$/'],
             'fotografia' => 'nullable|image|max:2048',
             'documentos_historico' => 'nullable|array',
-            'documentos_historico.*' => 'file|max:5120',
+            'documentos_historico.*' => 'mimes:pdf,doc,docx,odt,txt|max:5120',
+
         ]);
 
          // Upload da fotografia
@@ -111,7 +112,8 @@ class AlunoController extends Controller
 
         $aluno->update($validated);
 
-        return response()->json($aluno, 200);
+     return response()->json(['success' => true, 'data' => $aluno], 200);
+
     }
 
     /**
