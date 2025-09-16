@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Turma;
-
+use App\Models\Nota;
 
 class Aluno extends Model
 {
@@ -28,14 +28,19 @@ class Aluno extends Model
         'documentos_historico'
     ];
 
-// App\Models\Aluno.php
-public function turma()
-{
-    return $this->belongsTo(Turma::class);
-}
-
-    
     protected $casts = [
         'documentos_historico' => 'array'
     ];
+
+    // Relação com a turma
+    public function turma()
+    {
+        return $this->belongsTo(Turma::class);
+    }
+
+    // Relação com as notas
+    public function notas()
+    {
+        return $this->hasMany(Nota::class);
+    }
 }

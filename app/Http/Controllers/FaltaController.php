@@ -22,4 +22,20 @@ class FaltaController extends Controller
 
         return response()->json($faltas);
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'aluno_id' => 'required|exists:alunos,id',
+            'data_falta' => 'required|date',
+            'turma' => 'required|string',
+            'tipo' => 'required|in:justificada,injustificada',
+            'observacao' => 'nullable|string',
+            'motivo' => 'nullable|string',
+        ]);
+
+        $falta = Falta::create($request->all());
+
+        return response()->json($falta, 201);
+    }
 }

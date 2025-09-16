@@ -13,7 +13,9 @@ use App\Http\Controllers\{
     FundoController,
     RelatorioController,
     ReceitaController,
-    FaltaController
+    FaltaController,
+    NotaController
+
 };
 
 /*
@@ -36,14 +38,20 @@ Route::prefix('alunos')->group(function () {
     Route::get('/turma/{codigo}', [AlunoController::class, 'getPorTurma']);
     Route::get('/pesquisa', [AlunoController::class, 'buscar']); // evitar duplicidade
     Route::put('/{id}', [AlunoController::class, 'update']);
-    
+    Route::apiResource('faltas', FaltaController::class);
+    Route::post('/faltas', [FaltaController::class, 'store']);
+    Route::get('/faltas', [FaltaController::class, 'index']);
+    Route::apiResource('notas', NotaController::class);
+    Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
+    Route::get('/alunos/notas/export/manual', [NotaController::class, 'exportExcelManual']);
 });
+
+Route::get('/notas', [NotaController::class, 'index']);
 
 
 Route::get('/professores/com-salarios', [ProfessorController::class, 'comSalarios']);
 Route::get('/financas/resumo-mensal', [FinanceiroController::class, 'resumoMensal']);
 Route::post('/professores/filtrar', [ProfessorController::class, 'filtrar']);
-Route::apiResource('faltas', FaltaController::class);
 
 
 Route::get('/propinas', [PropinaController::class, 'listarPorMes']);

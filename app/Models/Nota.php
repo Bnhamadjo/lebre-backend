@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-class Falta extends Model
+use App\Models\Aluno;
+
+class Nota extends Model
 {
     protected $fillable = [
         'aluno_id',
-        'data_falta',
-        'turma',
-        'tipo', // justificada ou injustificada
-        'observacao'
+        'disciplina',
+        'periodo',
+        'nota',
+        'observacao',
+        'ano_letivo'
     ];
 
     public function aluno()
@@ -18,4 +21,4 @@ class Falta extends Model
         return $this->belongsTo(Aluno::class);
     }
 }
-?>
+
