@@ -6,6 +6,7 @@ use App\Models\Nota;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class NotasExportManual
 {
@@ -16,7 +17,7 @@ class NotasExportManual
         $this->request = $request;
     }
 
-    public function generateExcel()
+    public function generateExcel(): BinaryFileResponse
     {
         $notas = Nota::with('aluno')
             ->when($this->request->filled('aluno'), function ($q) {
@@ -54,7 +55,7 @@ class NotasExportManual
 
         // Gerar arquivo temporário
         $writer = new Xlsx($spreadsheet);
-        $filename = 'notas.xlsx';
+        $filename = 'notas_' . now()->format('Ymd_His') . '.xlsx';
         $temp_file = tempnam(sys_get_temp_dir(), $filename);
         $writer->save($temp_file);
 

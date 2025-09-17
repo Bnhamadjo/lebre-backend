@@ -6,23 +6,97 @@ use App\Models\Nota;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Exports\NotasExportManual;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class NotaController extends Controller
 {
-
-     public function index()
+    /**
+     * Lista todas as notas com dados do aluno
+     */
+    public function index()
     {
-        // Example response
-        return response()->json([
-            ['id' => 1, 'nota' => 18],
-            ['id' => 2, 'nota' => 15]
-        ]);
+        $notas = Nota::with('aluno')->get();
+        return response()->json($notas, 200);
     }
-    // Exportar notas para Excel com filtros manuais
 
+    /**
+     * Cria uma nova nota
+     */
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'aluno_id' => 'required|exists:alunos,id',
+        'disciplina' => 'required|string',
+        'periodo' => 'required|string',
+        'nota' => 'required|numeric|min:0|max:20',
+        'ano_letivo' => 'required|integer',
+    ]);
+
+    // Verifica se já existe uma nota igual para o mesmo aluno, disciplina, período e ano
+    $existe = Nota::where('aluno_id', $validated['aluno_id'])
+        ->where('disciplina', $validated['disciplina'])
+        ->where('periodo', $validated['periodo'])
+        ->where('ano_letivo', $validated['ano_letivo'])
+        ->first();
+
+    if ($existe) {
+        return response()->json([
+            'message' => 'Nota já cadastrada para este aluno, disciplina e período.',
+            'nota_existente' => $existe
+        ], 409); // 409 Conflict
+    }
+
+    $nota = Nota::create($validated);
+
+    return response()->json($nota, 201);
+}
+
+
+    /**
+     * Busca notas de um aluno específico
+     */
+    public function getNotasPorAluno($id)
+    {
+        $notas = Nota::where('aluno_id', $id)->get();
+        return response()->json($notas);
+    }
+
+    /**
+     * Filtra notas por aluno, disciplina, período e ano letivo
+     */
+    public function filtrar(Request $request)
+    {
+        $query = Nota::query();
+
+        if ($request->filled('aluno')) {
+            $query->whereHas('aluno', function ($q) use ($request) {
+                $q->where('nome_completo', 'like', '%' . $request->aluno . '%');
+            });
+        }
+
+        if ($request->filled('disciplina')) {
+            $query->where('disciplina', 'like', '%' . $request->disciplina . '%');
+        }
+
+        if ($request->filled('periodo')) {
+            $query->where('periodo', $request->periodo);
+        }
+
+        if ($request->filled('ano_letivo')) {
+            $query->where('ano_letivo', $request->ano_letivo);
+        }
+
+        $notas = $query->with('aluno')->get();
+
+        return response()->json($notas, 200);
+    }
+
+    /**
+     * Exporta notas filtradas para Excel
+     */
     public function exportExcelManual(Request $request)
     {
-        // Buscar notas com filtros
         $notas = Nota::with('aluno')
             ->when($request->filled('aluno'), fn($q) =>
                 $q->whereHas('aluno', fn($q2) =>
@@ -40,15 +114,20 @@ class NotaController extends Controller
             )
             ->get();
 
-        // Criar planilha
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Cabeçalhos
         $sheet->fromArray(['Aluno', 'Disciplina', 'Período', 'Nota', 'Ano Letivo'], NULL, 'A1');
 
-        // Dados
         $row = 2;
+
+        
+        // Usar a classe exportadora
+        {
+     $exporter = new NotasExportManual($request);
+     return $exporter->generateExcel();
+        }
+
         foreach ($notas as $nota) {
             $sheet->setCellValue("A{$row}", $nota->aluno->nome_completo ?? 'N/A');
             $sheet->setCellValue("B{$row}", $nota->disciplina);
@@ -58,13 +137,11 @@ class NotaController extends Controller
             $row++;
         }
 
-        // Gerar arquivo temporário
         $writer = new Xlsx($spreadsheet);
         $filename = 'notas.xlsx';
         $temp_file = tempnam(sys_get_temp_dir(), $filename);
         $writer->save($temp_file);
 
-        // Retornar para download
         return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
     }
 }

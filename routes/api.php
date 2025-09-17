@@ -35,18 +35,27 @@ Route::prefix('alunos')->group(function () {
     Route::get('/', [AlunoController::class, 'index']);
     Route::get('/distribuicao-por-turma', [AlunoController::class, 'distribuicaoPorTurma']);
     Route::get('/buscar', [AlunoController::class, 'buscarPorNome']);
+    Route::get('/busca', [AlunoController::class, 'buscar']); // ✅ esta é a rota usada pelo autocomplete
     Route::get('/turma/{codigo}', [AlunoController::class, 'getPorTurma']);
-    Route::get('/pesquisa', [AlunoController::class, 'buscar']); // evitar duplicidade
     Route::put('/{id}', [AlunoController::class, 'update']);
+    Route::get('/{id}', [AlunoController::class, 'show']);
+    Route::delete('/{id}', [AlunoController::class, 'destroy']);
     Route::apiResource('faltas', FaltaController::class);
     Route::post('/faltas', [FaltaController::class, 'store']);
     Route::get('/faltas', [FaltaController::class, 'index']);
-    Route::apiResource('notas', NotaController::class);
-    Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
-    Route::get('/alunos/notas/export/manual', [NotaController::class, 'exportExcelManual']);
 });
 
-Route::get('/notas', [NotaController::class, 'index']);
+// 🔓 Notas 
+
+Route::apiResource('notas', NotaController::class);
+Route::get('/alunos/busca', [AlunoController::class, 'buscar']);
+Route::post('/notas/filtrar', [NotaController::class, 'filtrar']);
+Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
+Route::get('/alunos/{id}/notas', [NotaController::class, 'getNotasPorAluno']);
+Route::get('/alunos/notas/export/manual', [NotaController::class, 'exportExcelManual']);
+
+
+
 
 
 Route::get('/professores/com-salarios', [ProfessorController::class, 'comSalarios']);

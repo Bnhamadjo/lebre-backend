@@ -62,6 +62,21 @@ class AlunoController extends Controller
     }
 
     /**
+     * Exibe um aluno específico
+     */
+    public function show($id)
+ {
+    $aluno = Aluno::find($id);
+
+    if (!$aluno) {
+        return response()->json(['erro' => 'Aluno não encontrado'], 404);
+     }
+
+     return response()->json($aluno);
+  }
+
+
+    /**
      * Atualiza um aluno existente
      */
     public function update(Request $request, $id)
@@ -160,16 +175,18 @@ class AlunoController extends Controller
     /**
      * Busca genérica por nome ou turma
      */
-    public function buscar(Request $request)
-    {
-        $query = $request->input('query');
+   public function buscar(Request $request)
+{
+    $termo = $request->query('termo');
 
-        $alunos = Aluno::where('nome_completo', 'like', "%{$query}%")
-            ->orWhere('atribuir_turma', 'like', "%{$query}%")
-            ->get();
+    $alunos = Aluno::where('nome_completo', 'like', '%' . $termo . '%')
+        ->select('id', 'nome_completo')
+        ->limit(10)
+        ->get();
 
-        return response()->json($alunos);
-    }
+    return response()->json($alunos);
+}
+
 
     /**
      * Distribuição de alunos por turma
