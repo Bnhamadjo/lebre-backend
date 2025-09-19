@@ -14,7 +14,10 @@ use App\Http\Controllers\{
     RelatorioController,
     ReceitaController,
     FaltaController,
-    NotaController
+    NotaController,
+    DisciplinaController,
+    
+
 
 };
 
@@ -28,6 +31,10 @@ use App\Http\Controllers\{
 // 🔓 Autenticação
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/disciplinas', [DisciplinaController::class, 'index']);
+Route::post('/disciplinas', [DisciplinaController::class, 'store']);
+
 
 // 🔓 Alunos
 Route::prefix('alunos')->group(function () {
@@ -43,6 +50,9 @@ Route::prefix('alunos')->group(function () {
     Route::apiResource('faltas', FaltaController::class);
     Route::post('/faltas', [FaltaController::class, 'store']);
     Route::get('/faltas', [FaltaController::class, 'index']);
+    Route::get('/boletim/aluno/{id}', [NotaController::class, 'boletimPorAluno']);
+    Route::get('/boletim/turma/{turma_id}', [NotaController::class, 'boletimPorTurma']);
+
 });
 
 // 🔓 Notas 
@@ -50,12 +60,15 @@ Route::prefix('alunos')->group(function () {
 Route::apiResource('notas', NotaController::class);
 Route::get('/alunos/busca', [AlunoController::class, 'buscar']);
 Route::post('/notas/filtrar', [NotaController::class, 'filtrar']);
-Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
 Route::get('/alunos/{id}/notas', [NotaController::class, 'getNotasPorAluno']);
 Route::get('/alunos/notas/export/manual', [NotaController::class, 'exportExcelManual']);
+Route::get('/boletim/aluno/{aluno_id}', [NotaController::class, 'boletimPorAluno']);
+Route::get('/boletim/turma/{turma_id}', [NotaController::class, 'boletimPorTurma']);
+Route::get('/boletim/aluno/{aluno_id}', [NotaController::class, 'boletimPorAluno']);
 
+Route::get('/boletim/alunos/com-notas', [NotaController::class, 'alunosComBoletim']);
 
-
+Route::get('/notas/export/pdf', [NotaController::class, 'exportNotasPDF']);
 
 
 Route::get('/professores/com-salarios', [ProfessorController::class, 'comSalarios']);
@@ -70,7 +83,15 @@ Route::get('/salarios', [SalarioController::class, 'listarPorMesEProfessor']);
 
 Route::get('/despesas', [DespesaController::class, 'listarPorMes']);
 
-
+Route::post('/disciplinas', [DisciplinaController::class, 'store']);
+Route::get('/disciplinas', [DisciplinaController::class, 'index']);
+// Ver disciplinas de um professor
+Route::get('/professores/{id}/disciplinas', [ProfessorController::class, 'disciplinas']);
+// Ver boletim de um aluno
+Route::get('/alunos/{id}/boletim', [AlunoController::class, 'boletim']);
+// Relatórios
+Route::post('/relatorios/receitas', [RelatorioController::class, 'receitas']);
+Route::post('/relatorios/despesas', [RelatorioController::class, 'despesas']);
 
 Route::post('/relatorios/alunos', [RelatorioController::class, 'alunos']);
 Route::post('/relatorios/salarios', [RelatorioController::class, 'salarios']);
@@ -86,6 +107,10 @@ Route::prefix('professores')->group(function () {
     Route::get('/buscar', [ProfessorController::class, 'buscarPorNome']);
 
     });
+
+    
+
+
 
 // 🔓 Despesas
 Route::prefix('despesas')->group(function () {

@@ -16,9 +16,31 @@ class Nota extends Model
         'ano_letivo'
     ];
 
+    public function disciplina()
+{
+    return $this->belongsTo(Disciplina::class);
+}
+
+
     public function aluno()
     {
         return $this->belongsTo(Aluno::class);
+
     }
+
+    // Define tipos automáticos para os campos
+    protected $casts = [
+        'nota' => 'float',
+        'ano_letivo' => 'integer',
+        'periodo' => 'string',
+        'disciplina' => 'string',
+        'observacao' => 'string'
+    ];
+
+    public function professor()
+{
+    return $this->belongsTo(Professor::class);
+}
+
 }
 

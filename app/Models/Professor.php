@@ -28,6 +28,12 @@ public function salarios()
 }
 
 
+    public function disciplinas()
+{
+    return $this->hasMany(Disciplina::class);
+}
+
+
     // Define tipos automáticos para os campos
     protected $casts = [
         'turmasAfetos' => 'array',

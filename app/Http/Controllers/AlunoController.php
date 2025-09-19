@@ -123,8 +123,6 @@ class AlunoController extends Controller
             $validated['documentos_historico'] = json_encode($documentosPaths);
         }
 
-        return response()->json(['success' => true, 'data' => $validated]);
-
         $aluno->update($validated);
 
      return response()->json(['success' => true, 'data' => $aluno], 200);
