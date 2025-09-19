@@ -32,11 +32,7 @@ class Aluno extends Model
         'documentos_historico' => 'array'
     ];
 
-    // Relação com a turma
-    public function turma()
-    {
-        return $this->belongsTo(Turma::class);
-    }
+
 
     // Relação com as notas
     public function notas()

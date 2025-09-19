@@ -68,8 +68,12 @@ class NotaController extends Controller
     /**
      * Filtra notas por aluno, disciplina, período e ano letivo
      */
+     protected $filtros;
+
     public function filtrar(Request $request)
     {
+
+        
         $query = Nota::query();
 
         if ($request->filled('aluno')) {
@@ -109,11 +113,10 @@ class NotaController extends Controller
 
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
+    
 
     // Cabeçalho
-    $sheet->fromArray([
-        'Aluno', 'Turma', 'Disciplina', '1º Período', '2º Período', '3º Período', 'Média', 'Observações'
-    ], NULL, 'A1');
+    $sheet->fromArray(['Aluno', 'Turma', 'Disciplina', 'Período', 'Nota', 'Ano Letivo'], null, 'A1');
 
     $row = 2;
 
@@ -144,9 +147,9 @@ class NotaController extends Controller
             $media = count($notasPeriodo) ? array_sum($notasPeriodo) / count($notasPeriodo) : null;
             $dados['media'] = $media ? round($media, 2) : '-';
 
-            $sheet->setCellValue("A{$row}", $aluno->nome_completo);
-            $sheet->setCellValue("B{$row}", $aluno->turma->codigo ?? 'N/A');
-            $sheet->setCellValue("C{$row}", ucfirst($disciplina));
+            $sheet->setCellValue("A{$row}", $nota->aluno->nome_completo ?? 'N/A');
+            $sheet->setCellValue("B{$row}", $nota->aluno->atribuir_turma ?? 'N/A');
+            $sheet->setCellValue("C{$row}", ucfirst($nota->disciplina));
             $sheet->setCellValue("D{$row}", $dados['periodos']['1'] ?? '-');
             $sheet->setCellValue("E{$row}", $dados['periodos']['2'] ?? '-');
             $sheet->setCellValue("F{$row}", $dados['periodos']['3'] ?? '-');
@@ -190,6 +193,8 @@ public function exportNotasPDF(Request $request)
     $notas = $query->with('aluno')->get();
     
     // CORREÇÃO: Diretamente usando a view 'notas'
+    
+    $pdf = Pdf::loadView('pdf.boletim', compact('dados', 'logotipo'));
     $pdf = PDF::loadView('notas', compact('notas'));
     
     return $pdf->download('relatorio_notas_' . date('Y-m-d_H-i-s') . '.pdf');

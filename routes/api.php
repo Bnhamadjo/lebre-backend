@@ -1,4 +1,6 @@
 <?php
+use App\Exports\NotasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +18,8 @@ use App\Http\Controllers\{
     FaltaController,
     NotaController,
     DisciplinaController,
+    ConfiguracaoSistemaController,
+    
     
 
 
@@ -34,6 +38,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/disciplinas', [DisciplinaController::class, 'index']);
 Route::post('/disciplinas', [DisciplinaController::class, 'store']);
+Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
 
 
 // 🔓 Alunos
@@ -144,6 +149,11 @@ Route::prefix('financeiro')->group(function () {
     Route::get('/resumo', [FinanceiroController::class, 'resumoMensal']);
 
 });
+
+Route::get('/configuracoes', [ConfiguracaoSistemaController::class, 'index']);
+Route::post('/configuracoes', [ConfiguracaoSistemaController::class, 'update']);
+Route::post('/configuracoes/logotipo', [ConfiguracaoSistemaController::class, 'uploadLogo']);
+
 
 // 🔐 Protegidas por autenticação Sanctum
 Route::middleware('auth:sanctum')->group(function () {

@@ -46,10 +46,11 @@ class NotasExportManual
         $row = 2;
         foreach ($notas as $nota) {
             $sheet->setCellValue("A{$row}", $nota->aluno->nome_completo ?? 'N/A');
+            $sheet->setCellValue("B{$row}", $nota->aluno->atribuir_turma ?? 'N/A');
             $sheet->setCellValue("B{$row}", $nota->disciplina);
-            $sheet->setCellValue("C{$row}", $nota->periodo);
-            $sheet->setCellValue("D{$row}", $nota->nota);
-            $sheet->setCellValue("E{$row}", $nota->ano_letivo);
+            $sheet->setCellValue("D{$row}", $nota->periodo);
+            $sheet->setCellValue("E{$row}", $nota->nota);
+            $sheet->setCellValue("F{$row}", $nota->ano_letivo);
             $row++;
         }
 

@@ -22,6 +22,14 @@
         <p><strong>Total de registros:</strong> {{ $notas->count() }}</p>
     </div>
 
+<div style="text-align: center; margin-bottom: 20px;">
+  @if($logotipo)
+    <img src="{{ public_path) }}
+  @endif
+  <h2>{{ $config->nome_escola ?? 'Sistema Lebre' }}</h2>
+</div>
+
+
     @if($notas->count() > 0)
         <table>
             <thead>
