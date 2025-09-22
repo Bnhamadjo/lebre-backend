@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fundos', function (Blueprint $table) {
-    $table->id();
-    $table->decimal('valor', 10, 2);
-    $table->string('origem');
-    $table->date('data_adicao');
-    $table->timestamps();
-});
+            $table->id();
+            $table->decimal('valor', 10, 2);
+            $table->string('origem'); // 'entrada' ou 'saida'
+            $table->date('data_adicao'); // Data do movimento
+            $table->string('descricao')->nullable(); // Adicione este campo se quiser salvar a descrição
+            $table->timestamps(); // created_at e updated_at
+        });
     }
 
     /**
