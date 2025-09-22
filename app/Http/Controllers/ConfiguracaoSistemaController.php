@@ -13,18 +13,42 @@ class ConfiguracaoSistemaController extends Controller
         return ConfiguracaoSistema::first();
     }
 
+    public function store(Request $request)
+    {
+        $config = ConfiguracaoSistema::firstOrCreate([]);
+
+        if ($request->hasFile('logotipo')) {
+            $file = $request->file('logotipo');
+            $path = $file->store('logotipos', 'public');
+            $config->logotipo = Storage::url($path);
+        }
+
+        $config->nome_escola = $request->input('nome_escola');
+        $config->cor_sidebar = $request->input('cor_sidebar');
+        $config->cor_fundo = $request->input('cor_fundo');
+        $config->cor_botao = $request->input('cor_botao');
+        $config->tema = $request->input('tema');
+        $config->idioma = $request->input('idioma');
+        $config->formato_data = $request->input('formato_data');
+
+        $config->save();
+
+        return response()->json([
+            'message' => 'Configurações salvas com sucesso!',
+            'data' => $config
+        ]);
+    }
+
     public function update(Request $request)
     {
         $config = ConfiguracaoSistema::firstOrCreate([]);
 
-        // Verifica se há logotipo enviado
         if ($request->hasFile('logotipo')) {
             $file = $request->file('logotipo');
-            $path = $file->store('public/logotipos');
+            $path = $file->store('logotipos', 'public');
             $config->logotipo = Storage::url($path);
         }
 
-        // Atualiza os outros campos
         $config->nome_escola = $request->input('nome_escola');
         $config->cor_sidebar = $request->input('cor_sidebar');
         $config->cor_fundo = $request->input('cor_fundo');

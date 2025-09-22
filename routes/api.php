@@ -152,7 +152,7 @@ Route::prefix('financeiro')->group(function () {
 
 Route::get('/configuracoes', [ConfiguracaoSistemaController::class, 'index']);
 Route::post('/configuracoes', [ConfiguracaoSistemaController::class, 'update']);
-Route::post('/configuracoes/logotipo', [ConfiguracaoSistemaController::class, 'uploadLogo']);
+Route::post('/configuracao-sistema', [ConfiguracaoSistemaController::class, 'store']);
 
 
 // 🔐 Protegidas por autenticação Sanctum
