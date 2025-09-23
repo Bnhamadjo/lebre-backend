@@ -25,7 +25,12 @@ class Aluno extends Model
         'atribuir_classe',
         'atribuir_turma',
         'fotografia',
-        'documentos_historico'
+        'documentos_historico',
+        'sexo',
+        'nacionalidade',
+        'tipo_documento'
+
+
     ];
 
     protected $casts = [

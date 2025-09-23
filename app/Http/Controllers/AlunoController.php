@@ -42,6 +42,10 @@ class AlunoController extends Controller
             'fotografia' => 'nullable|image|max:2048',
             'documentos_historico' => 'nullable|array',
             'documentos_historico.*' => 'file|max:5120',
+            'sexo' => 'nullable|string|max:20',
+            'nacionalidade' => 'nullable|string|max:50',
+            'tipo_documento' => 'nullable|string|max:30',
+
         ]);
 
         if ($request->hasFile('fotografia')) {
@@ -106,6 +110,10 @@ class AlunoController extends Controller
             'fotografia' => 'nullable|image|max:2048',
             'documentos_historico' => 'nullable|array',
             'documentos_historico.*' => 'mimes:pdf,doc,docx,odt,txt|max:5120',
+            'sexo' => 'nullable|string|max:20',
+            'nacionalidade' => 'nullable|string|max:50',
+            'tipo_documento' => 'nullable|string|max:30',
+
 
         ]);
 
