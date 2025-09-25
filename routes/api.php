@@ -154,6 +154,8 @@ Route::get('/configuracoes', [ConfiguracaoSistemaController::class, 'index']);
 Route::post('/configuracoes', [ConfiguracaoSistemaController::class, 'update']);
 Route::post('/configuracao-sistema', [ConfiguracaoSistemaController::class, 'store']);
 
+Route::apiResource('eventos', App\Http\Controllers\Api\EventoController::class);
+
 
 // 🔐 Protegidas por autenticação Sanctum
 Route::middleware('auth:sanctum')->group(function () {
