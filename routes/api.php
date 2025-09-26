@@ -39,6 +39,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/disciplinas', [DisciplinaController::class, 'index']);
 Route::post('/disciplinas', [DisciplinaController::class, 'store']);
 Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
+Route::get('/alunos/todos', [AlunoController::class, 'index']);
 
 
 // 🔓 Alunos
@@ -57,7 +58,7 @@ Route::prefix('alunos')->group(function () {
     Route::get('/faltas', [FaltaController::class, 'index']);
     Route::get('/boletim/aluno/{id}', [NotaController::class, 'boletimPorAluno']);
     Route::get('/boletim/turma/{turma_id}', [NotaController::class, 'boletimPorTurma']);
-
+    
 });
 
 // 🔓 Notas 
@@ -84,6 +85,7 @@ Route::post('/professores/filtrar', [ProfessorController::class, 'filtrar']);
 Route::get('/propinas', [PropinaController::class, 'listarPorMes']);
 Route::get('/receitas', [ReceitaController::class, 'listarPorMes']);
 Route::get('/salarios', [SalarioController::class, 'listarPorMesEProfessor']);
+Route::get('/propinas', [PropinaController::class, 'listarTodos']);
 
 
 Route::get('/despesas', [DespesaController::class, 'listarPorMes']);
@@ -147,6 +149,8 @@ Route::prefix('financeiro')->group(function () {
     Route::post('/despesas/registrar', [FinanceiroController::class, 'registrarDespesa']);
     Route::post('/fundo/adicionar', [FinanceiroController::class, 'adicionarFundo']);
     Route::get('/resumo', [FinanceiroController::class, 'resumoMensal']);
+    Route::get('/propinas/listar', [PropinaController::class, 'listarPagas']);
+    Route::get('/financeiro/propinas/listar-por-mes', [PropinaController::class, 'listarPorMes']);
 
 });
 
@@ -155,6 +159,16 @@ Route::post('/configuracoes', [ConfiguracaoSistemaController::class, 'update']);
 Route::post('/configuracao-sistema', [ConfiguracaoSistemaController::class, 'store']);
 
 Route::apiResource('eventos', App\Http\Controllers\Api\EventoController::class);
+
+
+//Perfil de usuarios
+Route::middleware(['auth:sanctum', 'perfil:aluno'])->group(function () {
+    Route::get('/portal-aluno', [AlunoController::class, 'index']);
+});
+
+Route::middleware(['auth:sanctum', 'perfil:professor'])->group(function () {
+    Route::get('/portal-professor', [ProfessorController::class, 'index']);
+});
 
 
 // 🔐 Protegidas por autenticação Sanctum

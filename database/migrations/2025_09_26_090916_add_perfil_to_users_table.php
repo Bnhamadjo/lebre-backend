@@ -11,16 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-    $table->id();
-    $table->string('nome');
-    $table->string('email')->unique();
-    $table->string('password');
-    $table->enum('perfil', ['aluno', 'encarregado', 'professor', 'secretariado']);
-    $table->timestamps();
-});
-
-
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('perfil', ['aluno', 'encarregado', 'professor', 'secretariado'])
+                  ->default('aluno')
+                  ->after('password');
+        });
     }
 
     /**
@@ -28,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_profiles');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('perfil');
+        });
     }
 };

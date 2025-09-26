@@ -49,12 +49,55 @@ class PropinaController extends Controller
         }
     }
 
-    public function listarPorMes(Request $request)
+    public function listarPagas()
 {
-    $mes = $request->query('mes');
-    $propinas = Propina::whereMonth('data_pagamento', $mes)->get();
+    $propinas = Propina::with('aluno')
+        ->orderBy('data_pagamento', 'desc')
+        ->get();
 
-    return response()->json($propinas);
+    $lista = $propinas->map(function ($p) {
+        return [
+            'recibo_id' => $p->id,
+            'nome_aluno' => $p->aluno->nome_completo ?? 'Aluno não encontrado',
+            'turma' => $p->aluno->atribuir_turma ?? 'Turma não definida',
+            'valor' => $p->valor,
+            'data_pagamento' => $p->data_pagamento,
+            'metodo_pagamento' => $p->metodo_pagamento,
+            'referente_mes' => $p->referente_mes,
+        ];
+    });
+
+    return response()->json($lista);
 }
+
+public function listarPorMes(Request $request)
+{
+    $referente_mes = $request->query('data pagamento'); 
+
+    $propinas = Propina::with('aluno')
+        ->whereMonth('data_pagamento', $referente_mes)
+        ->orderBy('data_pagamento', 'desc')
+        ->get();
+
+    $lista = $propinas->map(function ($p) {
+        return [
+            'recibo_id' => $p->id,
+            'nome_aluno' => $p->aluno->nome_completo ?? 'Aluno não encontrado',
+            'turma' => $p->aluno->atribuir_turma ?? 'Turma não definida',
+            'valor' => $p->valor,
+            'data_pagamento' => $p->data_pagamento,
+            'metodo_pagamento' => $p->metodo_pagamento,
+            'referente_mes' => $p->referente_mes,
+        ];
+    });
+
+    return response()->json($lista);
+}
+
+public function listarTodos()
+{
+    return Propina::with('aluno')->orderBy('data_pagamento', 'desc')->get();
+}
+
 
 }

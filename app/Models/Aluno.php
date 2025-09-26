@@ -38,6 +38,11 @@ class Aluno extends Model
     ];
 
 
+public function propinas()
+{
+    return $this->hasMany(Propina::class, 'aluno_id');
+}
+
 
     // Relação com as notas
     public function notas()
