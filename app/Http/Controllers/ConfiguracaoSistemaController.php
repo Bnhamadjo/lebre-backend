@@ -11,6 +11,11 @@ class ConfiguracaoSistemaController extends Controller
     public function index()
     {
         return ConfiguracaoSistema::first();
+        
+return response()->json([
+        'nome_escola' => 'Escola Lebre do Saber',
+        'logotipo_url' => asset('storage/logotipos/lebre.png')
+]);
     }
 
     public function store(Request $request)
@@ -38,6 +43,8 @@ class ConfiguracaoSistemaController extends Controller
             'data' => $config
         ]);
     }
+
+    
 
     public function update(Request $request)
     {

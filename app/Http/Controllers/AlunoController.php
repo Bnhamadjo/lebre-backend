@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Aluno;
 use App\Models\Turma;
+use App\Models\Falta;
 
 class AlunoController extends Controller
 {
@@ -206,6 +207,28 @@ class AlunoController extends Controller
 
         return response()->json($dados);
     }
+
+    public function fichaIndividual($id)
+{
+    $aluno = Aluno::findOrFail($id);
+
+    // Buscar faltas e ocorrências separadamente
+    $faltas = Falta::where('aluno_id', $id)->get();
+    
+
+    return response()->json([
+        'nome_completo' => $aluno->nome_completo,
+        'atribuir_turma' => $aluno->atribuir_turma,
+        'faltas' => $faltas,
+        'observacao' => $aluno->observacao,
+    ]);
+}
+
+public function listarPorAluno($id)
+{
+    $faltas = Falta::where('aluno_id', $id)->get();
+    return response()->json($faltas);
+}
 
     /**
      * Atribui automaticamente uma turma com base na classe

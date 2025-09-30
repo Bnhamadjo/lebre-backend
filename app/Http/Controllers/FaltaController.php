@@ -3,6 +3,7 @@
 namespace App\Http\Controllers; 
 use Illuminate\Http\Request;
 use App\Models\Falta;
+use App\Models\Aluno;
 
 
 class FaltaController extends Controller
@@ -38,4 +39,25 @@ class FaltaController extends Controller
 
         return response()->json($falta, 201);
     }
+
+    
+public function buscarPorNome(Request $request)
+{
+    $nome = $request->query('aluno');
+
+    if (!$nome) {
+        return response()->json(['erro' => 'Nome do aluno não fornecido'], 400);
+    }
+
+    $aluno = Aluno::where('nome_completo', $nome)->first();
+
+    if (!$aluno) {
+        return response()->json(['erro' => 'Aluno não encontrado'], 404);
+    }
+
+    $faltas = Falta::where('aluno_id', $aluno->id)->get();
+
+    return response()->json($faltas);
+}
+
 }

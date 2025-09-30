@@ -41,6 +41,11 @@ Route::post('/disciplinas', [DisciplinaController::class, 'store']);
 Route::get('/notas/export/manual', [NotaController::class, 'exportExcelManual']);
 Route::get('/alunos/todos', [AlunoController::class, 'index']);
 
+Route::get('/alunos/{id}/faltas', [FaltaController::class, 'listarPorAluno']);
+
+Route::get('/alunos/faltas', [FaltaController::class, 'index']);
+
+Route::get('/alunos/{id}/ficha-individual', [AlunoController::class, 'fichaIndividual']);
 
 // 🔓 Alunos
 Route::prefix('alunos')->group(function () {

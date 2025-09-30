@@ -43,6 +43,33 @@ public function propinas()
     return $this->hasMany(Propina::class, 'aluno_id');
 }
 
+public function fichaIndividual($id)
+{
+    $aluno = Aluno::with(['faltas']) 
+                  ->findOrFail($id);
+
+    return response()->json([
+        'nome_completo' => $aluno->nome_completo,
+        'atribuir_turma' => $aluno->atribuir_turma,
+        'faltas' => $aluno->faltas,
+        'ocorrencias' => $aluno->ocorrencias,
+        'observacao' => $aluno->observacao,
+    ]);
+}
+
+
+public function faltas()
+{
+    return $this->hasMany(Falta::class);
+}
+
+
+
+public function turma()
+{
+    return $this->belongsTo(Turma::class);
+}
+
 
     // Relação com as notas
     public function notas()
