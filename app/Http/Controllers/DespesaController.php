@@ -31,7 +31,7 @@ class DespesaController extends Controller
         $validated = $request->validate([
             'descricao' => 'required|string|max:255',
             'valor' => 'required|numeric|min:0',
-            'data' => 'required|date',
+            'data_registro' => 'required|date',
             'categoria' => 'nullable|string|max:100',
         ]);
 
